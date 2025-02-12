@@ -5,7 +5,7 @@ seeds = false
 skip-lint = false
 
 [programs.localnet]
-event_manager = "CKTYiehaWakXn89NpFsuf1dC5m3QBthXQLNjUkC7ng8z"
+event_manager = "DoTtdvtPsYps6jULoqBwSAmqT4VQbh8LVHtFrpgb3czn"
 
 [registry]
 url = "https://api.apr.dev"
@@ -20,3 +20,4 @@ test = "yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/**/*.ts"
 # Added this troubleshooting
 [build]
 solana_version = "2.1.14"
+rustflags = ["-C", "lto=no", "-C", "opt-level=2"]
