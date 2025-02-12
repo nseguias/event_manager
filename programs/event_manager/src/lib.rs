@@ -10,7 +10,7 @@ use crate::collections::event::{Metadata, Prices};
 
 // This is your program's public key and it will update
 // automatically when you build the project.
-declare_id!("DoTtdvtPsYps6jULoqBwSAmqT4VQbh8LVHtFrpgb3czn");
+declare_id!("");
 
 #[program]
 mod event_manager {
