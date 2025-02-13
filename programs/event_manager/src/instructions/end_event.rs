@@ -3,7 +3,7 @@ use crate::utility::*;
 use anchor_lang::prelude::*;
 
 pub fn end_event(ctx: Context<EndEvent>) -> Result<()> {
-    ctx.accounts.event.state.is_active = false;
+    ctx.accounts.event.is_active = false;
     Ok(())
 }
 
@@ -12,12 +12,12 @@ pub struct EndEvent<'info> {
     #[account(
         mut,
         seeds = [
-            event.metadata.id.to_string().as_ref(),
+            event.id.to_string().as_ref(),
             Event::EVENT_SEED.as_bytes(),
-            event.accounts.organizer.as_ref(),
+            event.organizer.as_ref(),
         ],
-        bump = event.bumps.event,
-        constraint = event.accounts.organizer == organizer.key() @ ContractError::Unauthorized,
+        bump = event.event_bump,
+        constraint = event.organizer == organizer.key() @ ContractError::Unauthorized,
     )]
     pub event: Account<'info, Event>,
 

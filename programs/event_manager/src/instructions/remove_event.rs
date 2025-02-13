@@ -5,10 +5,10 @@ use anchor_spl::token::*;
 
 pub fn remove_event(ctx: Context<RemoveEvent>) -> Result<()> {
     let signer_seeds: &[&[&[u8]]] = &[&[
-        ctx.accounts.event.metadata.id.as_ref(),
+        ctx.accounts.event.id.as_ref(),
         Event::EVENT_SEED.as_bytes(),
-        ctx.accounts.event.accounts.organizer.as_ref(),
-        &[ctx.accounts.event.bumps.event],
+        ctx.accounts.event.organizer.as_ref(),
+        &[ctx.accounts.event.event_bump],
     ]];
 
     let close_ticket_vault = CpiContext::new(
@@ -58,14 +58,14 @@ pub struct RemoveEvent<'info> {
     #[account(
         mut,
         seeds = [
-            event.metadata.id.to_string().as_ref(),
+            event.id.to_string().as_ref(),
             Event::EVENT_SEED.as_bytes(),
             organizer.key().as_ref(),
         ],
-        bump = event.bumps.event,
-        constraint = event.state.sponsorships_sold == 0 @ ContractError::EventHasSponsors,
-        constraint = event.state.tickets_sold == 0 @ ContractError::EventHasParticipants,
-        constraint = event.accounts.organizer == organizer.key() @ ContractError::Unauthorized,
+        bump = event.event_bump,
+        constraint = event.sponsorships_sold == 0 @ ContractError::EventHasSponsors,
+        constraint = event.tickets_sold == 0 @ ContractError::EventHasParticipants,
+        constraint = event.organizer == organizer.key() @ ContractError::Unauthorized,
         close = organizer,
     )]
     pub event: Account<'info, Event>,
@@ -76,7 +76,7 @@ pub struct RemoveEvent<'info> {
             Event::SPONSORSHIP_VAULT_SEED.as_bytes(),
             event.key().as_ref(),
         ],
-        bump = event.bumps.sponsorship_vault,
+        bump = event.sponsorship_vault_bump,
         constraint = sponsorship_vault.amount == 0 @ ContractError::VaultNotEmpty,
         // won't use close this time to practice CPIs
     )]
@@ -88,7 +88,7 @@ pub struct RemoveEvent<'info> {
             Event::TICKET_VAULT_SEED.as_bytes(),
             event.key().as_ref(),
         ],
-        bump = event.bumps.ticket_vault,
+        bump = event.ticket_vault_bump,
         constraint = ticket_vault.amount == 0 @ ContractError::VaultNotEmpty,
 
     )]
@@ -100,7 +100,7 @@ pub struct RemoveEvent<'info> {
             Event::EVENT_TOKEN_SEED.as_bytes(),
             event.key().as_ref(),
         ],
-        bump = event.bumps.event_token,
+        bump = event.event_token_bump,
     )]
     pub event_token: Account<'info, Mint>,
 
