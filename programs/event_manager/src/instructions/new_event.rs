@@ -5,31 +5,38 @@ use anchor_spl::token::{Mint, Token, TokenAccount};
 // define the function
 pub fn new_event(
     ctx: Context<NewEvent>,
-    metadata: Metadata,
+    id: String,
+    name: String,
+    description: String,
     // we assume prices are sent in lamports
-    prices: Prices,
+    ticket_price: u64,
+    sponsorship_price: u64,
 ) -> Result<()> {
     // save metadata
-    ctx.accounts.event.metadata = metadata;
+    ctx.accounts.event.id = id;
+    ctx.accounts.event.name = name;
+    ctx.accounts.event.description = description;
 
     // save prices
-    ctx.accounts.event.prices = prices;
+    ctx.accounts.event.ticket_price = ticket_price;
+    ctx.accounts.event.sponsorship_price = sponsorship_price;
 
     // save clean state
-    ctx.accounts.event.state = State {
-        is_active: true,
-        ..Default::default()
-    };
+    ctx.accounts.event.is_active = true;
+    ctx.accounts.event.unique_sponsors = 0;
+    ctx.accounts.event.active_sponsors = 0;
+    ctx.accounts.event.tickets_sold = 0;
+    ctx.accounts.event.sponsorships_sold = 0;
 
     // save accounts
-    ctx.accounts.event.accounts.organizer = ctx.accounts.organizer.key();
-    ctx.accounts.event.accounts.base_denom = ctx.accounts.base_denom.key();
+    ctx.accounts.event.organizer = ctx.accounts.organizer.key();
+    ctx.accounts.event.base_denom = ctx.accounts.base_denom.key();
 
     // save bumps
-    ctx.accounts.event.bumps.event = ctx.bumps.event;
-    ctx.accounts.event.bumps.event_token = ctx.bumps.event_token;
-    ctx.accounts.event.bumps.ticket_vault = ctx.bumps.ticket_vault;
-    ctx.accounts.event.bumps.sponsorship_vault = ctx.bumps.sponsorship_vault;
+    ctx.accounts.event.event_bump = ctx.bumps.event;
+    ctx.accounts.event.event_token_bump = ctx.bumps.event_token;
+    ctx.accounts.event.ticket_vault_bump = ctx.bumps.ticket_vault;
+    ctx.accounts.event.sponsorship_vault_bump = ctx.bumps.sponsorship_vault;
 
     Ok(())
 }
@@ -49,9 +56,9 @@ pub struct NewEvent<'info> {
         payer = organizer,
         space = 8 + Event::INIT_SPACE,
     )]
-    pub event: Account<'info, Event>,
+    pub event: Box<Account<'info, Event>>,
 
-    pub base_denom: Account<'info, Mint>,
+    pub base_denom: Box<Account<'info, Mint>>,
 
     #[account(
         init,
@@ -64,7 +71,7 @@ pub struct NewEvent<'info> {
         mint::decimals = 0,
         mint::authority = event,
     )]
-    pub event_token: Account<'info, Mint>,
+    pub event_token: Box<Account<'info, Mint>>,
 
     #[account(
         init,

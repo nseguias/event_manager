@@ -1,14 +1,15 @@
-[toolchain]
+# [toolchain]
+# channel = "nightly-2024-11-19"
 
-[features]
-seeds = false
-skip-lint = false
+# [features]
+# seeds = false
+# skip-lint = false
 
 [programs.localnet]
-event_manager = "DoTtdvtPsYps6jULoqBwSAmqT4VQbh8LVHtFrpgb3czn"
+event_manager = "4nsfAkjy3u29a6zjpuaX6feWb8W3xDqwEx2Dz8srj7fb"
 
-[registry]
-url = "https://api.apr.dev"
+# [registry]
+# url = "https://api.apr.dev"
 
 [provider]
 cluster = "Localnet"
