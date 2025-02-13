@@ -49,9 +49,9 @@ pub struct NewEvent<'info> {
         payer = organizer,
         space = 8 + Event::INIT_SPACE,
     )]
-    pub event: Account<'info, Event>,
+    pub event: Box<Account<'info, Event>>,
 
-    pub base_denom: Account<'info, Mint>,
+    pub base_denom: Box<Account<'info, Mint>>,
 
     #[account(
         init,
@@ -64,7 +64,7 @@ pub struct NewEvent<'info> {
         mint::decimals = 0,
         mint::authority = event,
     )]
-    pub event_token: Account<'info, Mint>,
+    pub event_token: Box<Account<'info, Mint>>,
 
     #[account(
         init,
