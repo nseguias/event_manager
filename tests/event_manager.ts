@@ -95,7 +95,7 @@ describe("Event Manager test suite", () => {
     // create new event
     const tx = await program.methods
       .newEvent(metadata, prices)
-      .accounts({
+      .accountsPartial({
         event,
         baseDenom,
         eventToken,
@@ -103,6 +103,7 @@ describe("Event Manager test suite", () => {
         sponsorshipVault,
         organizer: organizer.publicKey,
       })
+      .signers([organizer.payer])
       .rpc();
 
     await provider.connection.confirmTransaction(tx);
@@ -129,10 +130,11 @@ describe("Event Manager test suite", () => {
   it("End event", async () => {
     const tx = await program.methods
       .endEvent()
-      .accounts({
+      .accountsPartial({
         event,
         organizer: organizer.publicKey,
       })
+      .signers([organizer.payer])
       .rpc();
 
     await provider.connection.confirmTransaction(tx);
@@ -147,13 +149,14 @@ describe("Event Manager test suite", () => {
 
     const tx = await program.methods
       .removeEvent()
-      .accounts({
+      .accountsPartial({
         event,
         sponsorshipVault,
         ticketVault,
         eventToken,
         organizer: organizer.publicKey,
       })
+      .signers([organizer.payer])
       .rpc();
 
     await provider.connection.confirmTransaction(tx);

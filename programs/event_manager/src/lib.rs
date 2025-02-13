@@ -1,3 +1,4 @@
+#![allow(unexpected_cfgs)]
 use crate::instructions::*;
 
 use anchor_lang::prelude::*;
